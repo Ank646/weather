@@ -355,15 +355,7 @@ def get_code() -> str:
 
 # def sendcode():
 
-#     print(code)
-#     # Your Twilio account SID and Auth Token from twilio.com/console
-#     account_sid = 'AC04b8a9a3c0124cab0154805abb3528db'
-#     auth_token = '9e41023b8249ea62fa28bea30016bebe'
-#     twilio_phone_number = '+16073501565'
-
-#     # The recipient's phone number
-#     recipient_phone_number = '+918340729647'
-
+#     
 #     # Create a Twilio client
 #     client = Client(account_sid, auth_token)
 
