@@ -1,6 +1,4 @@
-Here's the updated README with your additional features:
-
----
+You can view this at https://reallywhy.pythonanywhere.com/
 
 # Weather Application using Django
 
