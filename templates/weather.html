@@ -1,0 +1,662 @@
+{% extends 'base.html' %}
+{% block content%}
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f2f4;
+            color: rgb(75, 72, 72);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+        .weather-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .weather-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            text-align: center;
+            flex: 1 1 calc(25% - 20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .weather-card .icon {
+            font-size: 3em;
+            color: #0dd1bd;
+            margin-bottom: 10px;
+        }
+        .weather-card h2 {
+            margin: 10px 0;
+            font-size: 1.4em;
+            color: #004ac2;
+        }
+        .weather-card p {
+            margin: 5px 0;
+            font-size: 1em;
+            color: #333;
+        }
+        .weather-card .data {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .weather-card .label {
+            font-size: 0.9em;
+            color: #605656;
+        }
+        .alert-summary {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin: 10px 0;
+        }
+        .alert-summary h2 {
+            margin-top: 0;
+            font-size: 1.5em;
+        }
+        .alert-summary .summary-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .alert-summary .summary-item .summary-icon {
+            font-size: 2em;
+            color: #009688;
+            margin-right: 10px;
+        }
+        .alert-summary .summary-item .summary-text {
+            font-size: 1.2em;
+            color: #333;
+        }
+        .alert-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .alert-card .alert-icon {
+            font-size: 2em;
+            color: #e53935; /* Color can be changed based on condition */
+        }
+        .alert-card .alert-content {
+            flex: 1;
+            margin-left: 20px;
+        }
+        .alert-card .alert-title {
+            font-size: 1.2em;
+            margin: 0;
+            color: #333;
+        }
+        .alert-card .alert-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .alert-card .alert-time {
+            font-size: 0.9em;
+            color: #999;
+        }
+        a{
+            text-decoration: none;       }
+        .alert-card .alert-dismiss {
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #e53935;
+            transition: color 0.3s;
+        }
+        .alert-card .alert-dismiss:hover {
+            color: #c62828;
+        }
+        @media (max-width: 768px) {
+            .weather-card {
+                flex: 1 1 calc(50% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            .weather-card {
+                flex: 1 1 100%;
+            }
+        }
+        .ii{
+            margin-bottom: 30px;
+        }
+        .form-search{
+    margin: 0 auto;
+    text-align: center;
+
+    font: bold 13px sans-serif;
+     max-width: 70%;
+    position: relative;
+}
+
+.form-search input{
+    width: 60%;
+    box-sizing: border-box;
+    border-bottom-left-radius: 2px;
+    border-top-left-radius: 2px;
+    background-color:  #ffffff;
+    box-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.08);
+    padding: 14px 15px 14px 40px;
+    border: 1px solid #b6c3cd;;
+    border-right: 0;
+    color:#4E565C;
+    outline: none;
+    margin: 20px;
+}
+a{
+    color: black;
+}
+.form-search button{
+    border-bottom-right-radius: 2px;
+    border-top-right-radius: 2px;
+    background-color:  #1e93ed;
+    box-shadow: 1px 2px 4px 0 rgba(0, 0, 0, 0.08);
+    color: #ffffff;
+    padding: 15px 22px;
+    margin-left: -4px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+}
+
+.form-search i{
+    position: absolute;
+    top: 15px;
+    left: 20px;
+    font-size: 16px;
+    color: #80A3BD;
+}
+card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+   </style>
+     <script src="https://kit.fontawesome.com/7c8801c017.js" crossorigin="anonymous"></script>
+
+     <!-- Roboto Font -->
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+     
+     <!-- CSS File -->
+     <link rel="stylesheet" href="{% static "styles/css/style.css"%}">
+ 
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Weather Updates</h1>
+        </header>
+        
+
+
+<form class="form-search" method="POST" action="/search">{%csrf_token%}
+    <input type="search" name="city" placeholder="Enter your city">
+    <button type="submit">Search</button>
+    
+</form>
+
+       
+        
+        <div class="containeer">
+
+            {% for weather in weatheer%}
+            <a href="/city/{{weather.city}}">
+          <div class="card">
+        <div class="weather__header">
+            
+            <div class="weather__units">
+                <!-- <span class="weather_unit_celsius">&#176C</span>
+                <span class="weather_unit_farenheit">&#176F</span> -->
+            </div>
+        </div>
+        <div class="weather__body">
+            <h1 class="weather__city">{{weather.city}}</h1>
+            <div class="weather__datetime">{{weather.date}}
+            </div>
+            <div class="weather__forecast">{{weather.weather_description}}</div>
+            <div class="weather__icon">
+                <img src="https://openweathermap.org/img/wn/{{weather.icon}}@2x.png" alt="{{ weather.weather_description }} icon" />
+            </div>
+            <p class="weather__temperature">{{weather.current_temp}}&#176C</p>
+            
+            <div class="weather__minmax">
+                <p>Min: <b class="min">{{weather.min_temp}}&#176C</b></p>
+                <p>Max: <b class="max">{{weather.max_temp}}&#176C</b></p>
+            </div>
+        </div>
+    
+        <div class="weather__info">
+            <div class="weather__card">
+                <i class="fa-solid fa-temperature-full"></i>
+                <div>
+                    <p>Real Feel</p>
+                    <p class="weather__realfeel">{{weather.feels_like}}</p>
+                </div>
+            </div>
+            <div class="weather__card">
+                <i class="fa-solid fa-droplet"></i>
+                <div>
+                    <p>Humidity</p>
+                    <p class="weather__humidity">{{weather.avg_humidity}}</p>
+                </div>
+            </div>
+            <div class="weather__card">
+                <i class="fa-solid fa-wind"></i>
+                <div>
+                    <p>Wind</p>
+                    <p class="weather__wind">{{weather.wind_speed}}</p>
+                </div>
+            </div>
+            <div class="weather__card">
+                <i class="fa-solid fa-gauge-high"></i>
+                <div>
+                    <p>Pressure</p>
+                    <p class="weather__pressure">{{weather.avg_pressure}}</p>
+                </div>
+            </div>
+        </div>
+        </div>
+    </a>
+        {% endfor %}
+    </div>
+    <div class="containeer">
+
+        {% for weather in weather_data_list %}
+        <a href="/city/{{weather.city}}">
+      <div class="card">
+    <div class="weather__header">
+        
+        <div class="weather__units">
+            <!-- <span class="weather_unit_celsius">&#176C</span>
+            <span class="weather_unit_farenheit">&#176F</span> -->
+        </div>
+    </div>
+    <div class="weather__body">
+        <h1 class="weather__city">{{weather.city}}</h1>
+        <div class="weather__datetime">{{weather.date}}
+        </div>
+        <div class="weather__forecast">{{weather.weather_description}}</div>
+        <div class="weather__icon">
+            <img src="https://openweathermap.org/img/wn/{{weather.icon}}@2x.png" alt="{{ weather.weather_description }} icon" />
+        </div>
+        <p class="weather__temperature">{{weather.current_temp}}&#176C</p>
+        
+        <div class="weather__minmax">
+            <p>Min: <b class="min">{{weather.min_temp}}&#176C</b></p>
+            <p>Max: <b class="max">{{weather.max_temp}}&#176C</b></p>
+        </div>
+    </div>
+
+    <div class="weather__info">
+        <div class="weather__card">
+            <i class="fa-solid fa-temperature-full"></i>
+            <div>
+                <p>Real Feel</p>
+                <p class="weather__realfeel">{{weather.feels_like}}</p>
+            </div>
+        </div>
+        <div class="weather__card">
+            <i class="fa-solid fa-droplet"></i>
+            <div>
+                <p>Humidity</p>
+                <p class="weather__humidity">{{weather.avg_humidity}}</p>
+            </div>
+        </div>
+        <div class="weather__card">
+            <i class="fa-solid fa-wind"></i>
+            <div>
+                <p>Wind</p>
+                <p class="weather__wind">{{weather.wind_speed}}</p>
+            </div>
+        </div>
+        <div class="weather__card">
+            <i class="fa-solid fa-gauge-high"></i>
+            <div>
+                <p>Pressure</p>
+                <p class="weather__pressure">{{weather.avg_pressure}}</p>
+            </div>
+        </div>
+    </div>
+    </div>
+</a>
+    {% endfor %}
+</div>
+       <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+body{
+    background-color: rgb(17, 71, 113);
+}
+.containeer {
+   
+    color: #1d1c1c;
+   
+    margin-bottom:20px ;
+    display: flex;
+    justify-content: center;
+    flex-wrap:wrap ;
+}
+.card{
+    margin:20px;
+    width:400px;
+    padding: 15px;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.containeeer {
+   
+   color: #2d2c2c;
+   padding: 5px;
+   margin-bottom:20px ;
+   display: flex;
+   justify-content: center;
+   flex-wrap:wrap ;
+   background: rgb(0, 51, 133);
+}
+.caardd{
+   margin:20px;
+   width: 80%;
+   padding: 15px;
+   border-radius: 10px;
+  
+}
+
+.weather__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+input {
+    border: none;
+    background: #ded8d8;
+    outline: none;
+    color: #2d2b2b;
+    padding: 0.5rem 2.5rem;
+    border-radius: 5px;
+}
+
+input::placeholder {
+    color: #fff;
+}
+
+.weather__search {
+    position: relative;
+}
+
+.weather__search i {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    font-size: 15px;
+    color: #fff;
+}
+
+.weather__units {
+    font-size: 1.5rem;
+}
+
+.weather__units span {
+    cursor: pointer;
+}
+
+.weather__units span:first-child {
+    margin-right: 0.5rem;
+}
+
+.weather__body {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.weather__datetime {
+    margin-bottom: 2rem;
+    font-size: 14px;
+}
+
+.weather__forecast {
+    background: #525151;
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    color: white;
+    border-radius: 30px;
+}
+
+.weather__icon img {
+    width: 100px;
+}
+
+.weather__temperature {
+    font-size: 1.75rem;
+}
+
+.weather__minmax {
+    display: flex;
+    justify-content: center;
+}
+
+.weather__minmax p {
+    font-size: 14px;
+    margin: 0.5rem;
+}
+
+.weather__info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1rem;
+    margin-top: 3rem;
+}
+
+.weather__card {
+    display: flex;
+    align-items: center;
+    background: #efebeb;
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.weather__card i {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+}
+
+.weather__card p {
+    font-size: 14px;
+}
+
+@media(max-width: 936px){
+    .container {
+        width: 90%;
+    }
+
+    .weather__header {
+        flex-direction: column;
+    }
+
+    .weather__units {
+        margin-top: 1rem;
+    }
+}
+.alert-summary {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px 0;
+    color: #333;
+}
+
+.alert-summary h2 {
+    margin: 0;
+    font-size: 1.8em;
+    color: #54585e;
+    border-bottom: 2px solid #0072ff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.summary-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 10px;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-icon {
+    font-size: 2em;
+    color: #0072ff;
+    margin-right: 15px;
+}
+
+.summary-text {
+    font-size: 1.2em;
+    color: #555;
+}
+
+.summary-text strong {
+    color: #797a7c;
+    font-weight: 600;
+}
+i{
+    color: #2c61da;
+}
+
+@media(max-width: 400px){
+    .weather__info {
+        grid-template-columns: none;
+    }
+}
+       </style>
+      
+    
+
+      <div class="alert-summary">
+        <h2>Alert Summary of previous 4 hours</h2>
+        <div class="summary-item">
+            <div class="summary-icon">
+                <i class="fas fa-temperature-high"></i>
+            </div>
+            <div class="summary-text">
+                <strong>High Temperature:</strong> {{ high_temp_count }}
+            </div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-icon">
+                <i class="fas fa-temperature-low"></i>
+            </div>
+            <div class="summary-text">
+                <strong>Low Temperature:</strong> {{ low_temp_count }}
+            </div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-icon">
+                <i class="fas fa-cloud-showers-heavy"></i>
+            </div>
+            <div class="summary-text">
+                <strong>Heavy Rain:</strong> {{ rain_count }}
+            </div>
+        </div>
+        <div class="summary-item">
+            <div class="summary-icon">
+                <i class="fas fa-wind"></i>
+            </div>
+            <div class="summary-text">
+                <strong>High Wind Speed:</strong> {{ wind_count }}
+            </div>
+        </div>
+    </div>
+    
+
+        <div class="alert-container">
+            <header>
+                <h1>Alerts of previous 4 hours</h1>
+            </header>
+            {% for alert in alerts %}
+            <div class="alert-card">
+                <div class="alert-icon">
+                    <!-- Update icon based on alert condition -->
+                    {% if alert.condition == "High Temperature" %}
+                        <i class="fas fa-temperature-high"></i>
+                    {% elif alert.condition == "Low Temperature" %}
+                        <i class="fas fa-temperature-low"></i>
+                    {% elif alert.condition == "Heavy Rain" %}
+                        <i class="fas fa-cloud-showers-heavy"></i>
+                    {% elif alert.condition == "High Wind Speed" %}
+                        <i class="fas fa-wind"></i>
+                    {% endif %}
+                </div>
+                <div class="alert-content">
+                    <p class="alert-title">{{ alert.city }}: {{ alert.condition }}</p>
+                    <p class="alert-details">Threshold: {{ alert.threshold }}</p>
+                    <p class="alert-time">Triggered at {{ alert.timestamp }}</p>
+                </div>
+               
+                    <i class="fa-solid fa-times alert-dismiss" onclick="this.parentElement.style.display='none'"></i>
+                
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    
+
+    <script>
+        function dismissAlert(alertId) {
+            // Add logic to dismiss the alert
+            console.log('Dismiss alert with ID:', alertId);
+        }
+    </script>
+</body>
+</html>
+<script src="{% static "styles/js/script.js"%}" type="text/javascript"></script>
+<script src="{% static "styles/js/index.js"%}" type="text/javascript"></script>
+
+{% endblock content%}

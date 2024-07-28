@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Monitoring</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #ece9e6, #ffffff);
+            color: #363434;
+        }
+        .weather-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        a {
+            color: black;
+        }
+        .weather-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        .sunny { background-color: #fdd835; }
+        .misty { background-color: #98c6e0; }
+        .rainy { background-color: #0288d1; }
+        .drizzle { background-color: #458fb7; }
+        .cloudy { background-color: #90a4ae; }
+        .card-title { font-weight: 700; }
+        .text-muted { color: rgba(255, 255, 255, 0.8) !important; }
+        .btn-custom {
+            background-color: #f48fb1;
+            border: none;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #f06292;
+        }
+        .list-group-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid black;
+            border-radius: 10px;
+        }
+        .weather-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <form action="/search" method="POST" class="mb-4">
+            {% csrf_token %}
+            <div class="input-group">
+                <input type="text" name="city" class="form-control" placeholder="Enter City">
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-custom">Submit</button>
+                </div>
+            </div>
+        </form>
+
+        <h1 class="text-center mb-5">Weather in {{ city_data.city }}</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-4">
+                <a href="city/{{city_data.city}}" class="text-decoration-none">
+                    <div class="card shadow-sm weather-card {% if data.main_condition == 'Haze' %}sunny
+                    {% elif data.main_condition == 'Rain' %}rainy
+                    {% elif data.main_condition == 'Mist' %}misty
+                    {% elif data.main_condition == 'Drizzle' %}drizzle
+                    {% elif data.main_condition == 'Clouds' %}cloudy
+                    {% endif %}">
+                        <div class="card-body text-center">
+                            <i class="weather-icon 
+                                {% if data.main_condition == 'Haze' %}fas fa-sun
+                                {% elif data.main_condition == 'Rain' %}fas fa-cloud-showers-heavy
+                                {% elif data.main_condition == 'Mist' %}fas fa-smog
+                                {% elif data.main_condition == 'Drizzle' %}fas fa-cloud-rain
+                                {% elif data.main_condition == 'Clouds' %}fas fa-cloud
+                                {% endif %}">
+                            </i>
+                            <h5 class="card-title">{{ city_data.city }}</h5>
+                            <p class="card-text">
+                                Temperature: <strong>{{ city_data.temperature }}°C</strong><br>
+                                Condition: {{ city_data.main_condition }}<br>
+                                <small class="text-muted">Updated at {{ city_data.timestamp }}</small>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for data in weather_data %}
+            <div class="col-md-4 mb-4">
+                <a href="/city/{{data.city}}" class="text-decoration-none">
+                    <div class="card shadow-sm weather-card {% if data.main_condition == 'Haze' %}sunny
+                    {% elif data.main_condition == 'Rain' %}rainy
+                    {% elif data.main_condition == 'Mist' %}misty
+                    {% elif data.main_condition == 'Drizzle' %}drizzle
+                    {% elif data.main_condition == 'Clouds' %}cloudy
+                    {% endif %}">
+                        <div class="card-body text-center">
+                            <i class="weather-icon 
+                                {% if data.main_condition == 'Haze' %}fas fa-sun
+                                {% elif data.main_condition == 'Rain' %}fas fa-cloud-showers-heavy
+                                {% elif data.main_condition == 'Mist' %}fas fa-smog
+                                {% elif data.main_condition == 'Drizzle' %}fas fa-cloud-rain
+                                {% elif data.main_condition == 'Clouds' %}fas fa-cloud
+                                {% endif %}">
+                            </i>
+                            <h5 class="card-title">{{ data.city }}</h5>
+                            <p class="card-text">
+                                Temperature: <strong>{{ data.temperature }}°C</strong><br>
+                                Condition: {{ data.main_condition }}<br>
+                                <small class="text-muted">Updated at {{ data.timestamp }}</small>
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2 class="mt-5 mb-3">Alerts</h2>
+        <ul class="list-group">
+            {% for alert in alerts %}
+            <li class="list-group-item">
+                <strong>{{ alert.city }}</strong>: {{ alert.condition }} triggered at {{ alert.timestamp }}
+            </li>
+            {% endfor %}
+        </ul>
+
+        <h2 class="mt-5 mb-3">Overall Weather Summary</h2>
+        <canvas id="summaryChart"></canvas>
+
+        <h2 class="mt-5 mb-3">Overall Historical Trends</h2>
+        <canvas id="historicalChart"></canvas>
+    </div>
+
+    <script>
+        // Summary Chart
+        const summaryCtx = document.getElementById('summaryChart').getContext('2d');
+        const summaryChart = new Chart(summaryCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Avg Temp', 'Max Temp', 'Min Temp'],
+                datasets: [{
+                    label: 'Today\'s Summary',
+                    data: [{{ summary_data.avg_temp }}, {{ summary_data.max_temp }}, {{ summary_data.min_temp }}],
+                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)'],
+                    borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: 'black' }
+                    },
+                    x: { ticks: { color: 'black' } }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'black'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Historical Trends Chart
+        const historicalCtx = document.getElementById('historicalChart').getContext('2d');
+        const historicalChart = new Chart(historicalCtx, {
+            type: 'line',
+            data: {
+                labels: [{% for record in historical_data %}'{{ record.timestamp__date }}',{% endfor %}],
+                datasets: [{
+                    label: 'Average Temperature Over Last Week',
+                    data: [{% for record in historical_data %}{{ record.avg_temp }},{% endfor %}],
+                    backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    borderWidth: 2,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: 'black' }
+                    },
+                    x: { ticks: { color: 'black' } }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'black'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

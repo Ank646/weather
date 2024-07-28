@@ -1,0 +1,131 @@
+
+
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+	<!-- Bootstrap 5 CDN Link -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	<!-- Custom CSS Link -->
+	<style>
+        #f{
+            height:90px;
+            width:90px;
+            border-radius: 100%;
+        }
+    </style>
+</head>
+<body> 
+    <section class="wrapper">
+		<div class="container">
+			<div class="col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4 text-center">
+				<div class="logo">
+					<img id="f"src="{%static "styles/images/login.png"%}" class="img-fluid" alt="logo">
+				</div>
+				<form action="/validatestudent/{{token}}" method="POST"class="rounded bg-white shadow p-5">{%csrf_token%}
+					<h3 class="text-dark fw-bolder fs-4 mb-2">Verify your account </h3>
+
+					<div class="fw-normal text-muted mb-2">
+						Verification code sent to email
+					</div>
+
+                   	
+                    {%for message in messages%}
+                    <h3>{{message}}</h3>
+                    {%endfor%}
+                    <div class="form-floating mb-3">
+                        <input required type="text" name="code" class="form-control" id="floatingLastName" placeholder="Enter the verification code">
+                        <label for="floatingLastName">Verification code</label>
+                    </div> 
+					
+					<button type="submit" class="btn btn-primary submit_btn w-100 my-4">Verify</button> 
+				</form>
+			</div>
+		</div>
+	</section>
+</body>
+</html>
+
+
+<style>
+    /* Google Poppins Font CDN Link */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing: border-box;
+}
+
+/* Variables */
+:root{
+    --primary-font-family: 'Poppins', sans-serif;
+    --light-white:#f5f8fa;
+    --gray:#5e6278;
+    --gray-1:#e3e3e3;
+}
+body{
+    font-family:var(--primary-font-family);
+    font-size: 14px;
+} 
+h3{
+    color:red;
+    font-size: 15px;
+}
+
+/* Main CSS */ 
+.wrapper{
+    padding:0 0 100px;
+    background-image:url("images/bg.png");
+    background-position:bottom center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-attachment: fixed;
+    min-height: 100%;
+}
+.wrapper .logo img{
+    max-width:40%;
+}
+.wrapper input{
+    background-color:var(--light-white);
+    border-color:var(--light-white);
+    color:var(--gray);
+}
+.wrapper input:focus{
+    box-shadow: none;
+}
+.wrapper .password-info{
+    font-size:10px;
+}
+.wrapper .submit_btn{
+    padding:10px 15px;
+    font-weight:500;
+}
+.wrapper .login_with{
+    padding:8px 15px;
+    font-size:13px;
+    font-weight: 500;
+    transition:0.3s ease-in-out;
+}
+.wrapper .submit_btn:focus,
+.wrapper .login_with:focus{
+    box-shadow: none;
+}
+.wrapper .login_with:hover{
+    background-color:var(--gray-1);
+    border-color:var(--gray-1);
+}
+.wrapper .login_with img{
+    max-width:7%;
+}
+        
+      
+</style>
+<script>
+    document.cookie = 'token=' + "{{ token }}" + ';domain=;path=/'
+</script>

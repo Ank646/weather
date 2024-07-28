@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #0169b7, #046aae);
+            color: #333;
+            padding: 20px;
+            transition: background 0.5s ease-in-out;
+        }
+
+        h1, h2, h4 {
+            color: #535151;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .forecast-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+            background-color: #fafafd;
+            transition: transform 0.3s, background-color 0.3s;
+            padding: 20px;
+            
+            border-radius:10px;
+        }
+
+        .forecast-card:hover {
+            transform: scale(1.03);
+            background-color: #ffffff;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background-color: #eef0f3;
+            color: #fcfcfc;
+            font-size: 2em;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .weather-details {
+            padding: 15px;
+            display: flex;
+           justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .time-slot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .time-slot:last-child {
+            border-bottom: none;
+        }
+
+        .card {
+            display: flex;
+            /* flex-direction: column; */
+            align-items: center;
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            justify-content: center;
+            width:100px;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f2f4;
+            color: rgb(75, 72, 72);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .weather img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .main {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        header {
+            text-align: center;
+            padding: 20px;
+            background-color: #f0f2f4;
+            color: rgb(75, 72, 72);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        .mainsub {
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .chart-container {
+            width: 100%;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        canvas {
+            width: 100% !important;
+            max-height: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-4">
+         <header>
+            <h1>Upcoming trends for {{city_name}}</h1>
+        </header>
+        {% for date, entries in daily_forecast.items %}
+        <div class="forecast-card">
+            <div class="card-header">
+                <h4>{{ date }}</h4>
+            </div>
+            <div class="weather-details">
+                {% for entry in entries %}
+                <div class="card">
+                    <span>{{ entry.time }}</span>
+                    <img src="https://openweathermap.org/img/wn/{{ entry.icon }}@2x.png" alt="{{ entry.condition }}">
+                    <div class="main">{{ entry.temp }} °C</div>
+                    <div class="mainsub">{{ entry.condition }}</div>
+                </div>
+                {% endfor %}
+                
+            </div>
+        </div>
+
+     
+        {% endfor %}
+    </div>
+</body>
+</html>
+{% endblock content %}

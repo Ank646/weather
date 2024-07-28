@@ -1,0 +1,180 @@
+
+<style>
+     footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #3677f1;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            border-radius: 8px 8px 0 0;
+        }
+        footer p {
+            margin: 0;
+        }
+        a{
+            text-decoration: none;
+        }
+       
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #8a8aee;
+            padding: 10px 20px;
+        }
+        .navbar-brand {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5em;
+        }
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+        }
+        .navbar-link {
+            color: white;
+            text-decoration: none;
+            font-size: 1em;
+            transition: color 0.3s;
+        }
+        .navbar-link:hover {
+            color: #0dd1bd;
+        }
+        .navbar-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        .navbar-toggle div {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 3px 0;
+        }
+        @media (max-width: 600px) {
+            .navbar-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background-color: #8080ee;
+                padding: 10px 0;
+                margin-bottom:30px;
+            }
+            .navbar-links.active {
+                display: flex;
+            }
+            .navbar-toggle {
+                display: flex;
+                border-radius: 20px;
+                
+            }
+            a{
+                text-decoration: none;
+            }
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #f7f8fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        nav a {
+            color: #524e4e;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 1.1em;
+            transition: background 0.3s, color 0.3s;
+        }
+        nav a:hover {
+            background: #003d7a;
+            border-radius: 5px;
+            color: #fff;
+        }
+        .footer {
+    background-color: #e1e5ea; /* Change to a color that fits your theme */
+    color: #282727; /* Text color */
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    width: 100%;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer p {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+/* Optional: Add responsiveness for smaller screens */
+@media (max-width: 768px) {
+    .footer p {
+        font-size: 14px;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <nav>
+        
+        <a href="/" >Homepage</a>
+        {% if user.is_authenticated %} <a href="/logout" >Logout</a>{% else %}<a href="/loginn" ><i class="icon-user">Login</a>{% endif %}
+
+        <a href="">Alerts</a>
+        <!-- <a href="/contact">Contact</a> -->
+    </nav>
+    <!-- <nav class="navbar">
+        <a href="#" class="navbar-brand">WeatherApp</a>
+        <div class="navbar-toggle" id="navbarToggle">
+            <div></div>
+            <div></div>
+           
+        </div>
+        <div class="navbar-links" id="navbarLinks">
+        
+        </div>
+    </nav> -->
+
+    <script>
+        const navbarToggle = document.getElementById('navbarToggle');
+        const navbarLinks = document.getElementById('navbarLinks');
+
+        navbarToggle.addEventListener('click', () => {
+            navbarLinks.classList.toggle('active');
+        });
+    </script>
+
+
+{% block content%}
+{% endblock content %}
+<footer class="footer">
+    <div class="footer-content">
+        <p>&copy; {{ current_year }} Weather App</p>
+    </div>
+</footer>
